@@ -89,4 +89,4 @@ This is an early alpha. You should expect:
 
 ## License
 
-No license set yet.
+The Unlicense
