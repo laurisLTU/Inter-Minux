@@ -1,5 +1,5 @@
 # Inter-Minux (Ai written OS using C)
-
+![](Minuxscreen.png)
 Inter-Minux is a hobby OS prototype written with bootloader ASM, NASM, and C.
 
 > **Alpha status:** This project is currently **alpha** and has known bugs, missing features, and rough edges.
