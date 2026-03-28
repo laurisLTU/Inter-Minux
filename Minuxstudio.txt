@@ -1,0 +1,411 @@
+MINUX STUDIO
+Understanding M++ in Inter-Minux
+Version: Alpha Guide
+
+==================================================
+TABLE OF CONTENTS
+==================================================
+1. What Is M++
+2. How Minux Studio Works
+3. M++ Core Syntax
+4. Text Rendering Model
+5. Valid and Invalid Programs
+6. Working With .mpp Files
+7. Compiling to .mex
+8. Running .mex in File Explorer
+9. Full Workflow (Create -> Save -> Compile -> Run)
+10. File Explorer Integration
+11. Common Mistakes and Fixes
+12. Program Design Tips
+13. Advanced Authoring Patterns
+14. Debugging Strategy in Alpha Builds
+15. M++ Style Guide
+16. M++ Program Cookbook
+17. FAQ
+18. Glossary
+19. Practice Exercises
+20. Roadmap Ideas for Future M++
+
+
+==================================================
+1) WHAT IS M++
+==================================================
+M++ is the scripting language used in Minux Studio (inside Inter-Minux)
+to define very lightweight app output.
+
+Current focus of M++:
+- Fast text app prototyping
+- Simple parser rules
+- Easy authoring inside a tiny OS
+- Compatibility with Studio preview and .mex runtime
+
+M++ is intentionally minimal right now.
+This is an alpha language in an alpha operating system.
+
+
+==================================================
+2) HOW MINUX STUDIO WORKS
+==================================================
+Minux Studio has three major areas:
+
+1. Code Box
+- Where you type M++ source code
+
+2. Preview
+- Shows parsed output from your current code
+
+3. File Actions
+- Open
+- Save
+- Compile
+- Explorer
+
+Minux Studio currently behaves like a compact code editor + parser front-end.
+
+
+==================================================
+3) M++ CORE SYNTAX
+==================================================
+Current primary pattern:
+
+text+textbox=Hello World!
+
+Meaning:
+- text        -> output type is text
+- +textbox    -> render target style
+- =           -> assignment
+- Hello World -> content payload
+
+Important:
+- In current updated style, you do NOT need parentheses.
+- You do NOT need quotes for normal text.
+
+Preferred modern form:
+text+textbox=Your Message Here
+
+Legacy-compatible form (still tolerated by parser fallback in some builds):
+text+textbox=("Your Message Here")
+
+
+==================================================
+4) TEXT RENDERING MODEL
+==================================================
+At runtime, parser extracts the right side of '=' and uses that as display text.
+
+For example:
+text+textbox=Inter-Minux
+
+Output:
+Inter-Minux
+
+The rendering pipeline is simple:
+Source String -> Parse -> Preview/Runtime Text
+
+
+==================================================
+5) VALID AND INVALID PROGRAMS
+==================================================
+VALID:
+- text+textbox=Hello
+- text+textbox=Hello from MPP
+- text+textbox=Build 1.0
+- text+textbox=Status: OK
+
+INVALID (common):
+- text+textbox            (missing '=...')
+- =Hello                  (missing left declaration)
+- text+textbox=           (empty right side often treated as invalid)
+- randomstuff             (missing recognized structure)
+
+If parser cannot extract content, Studio may show:
+INVALID M++
+
+
+==================================================
+6) WORKING WITH .MPP FILES
+==================================================
+.mpp is your editable source format.
+
+Use .mpp when:
+- You want to keep editing code
+- You want to maintain source history
+- You want to recompile later
+
+Typical naming:
+- hello.mpp
+- menu_label.mpp
+- welcome_screen.mpp
+
+Best practice:
+- Keep one feature per file
+- Use short, meaningful names
+
+
+==================================================
+7) COMPILING TO .MEX
+==================================================
+Compile action creates runtime file output with extension .mex.
+
+.mex is treated as runnable output by Inter-Minux File Explorer.
+
+Rule:
+- .mex extension is required and forced for compile output in current design.
+
+Example:
+Source:  hello.mpp
+Output:  hello.mex
+
+
+==================================================
+8) RUNNING .MEX IN FILE EXPLORER
+==================================================
+In File Explorer:
+- Navigate to folder with .mex
+- Click the .mex file
+- Inter-Minux opens runtime app window (RUN)
+- Parsed text is displayed
+
+This is your program execution path right now.
+
+
+==================================================
+9) FULL WORKFLOW
+==================================================
+Step-by-step:
+
+1. Open Minux Studio from desktop icon
+2. Type code, for example:
+   text+textbox=Hello World!
+3. Use Save to store source as .mpp
+4. Use Compile to output .mex
+5. Open File Explorer
+6. Locate .mex
+7. Click .mex to run
+
+That is the complete authoring pipeline.
+
+
+==================================================
+10) FILE EXPLORER INTEGRATION
+==================================================
+Explorer supports:
+- Folder navigation
+- Back / Forward
+- New Folder
+- Rename
+- Selecting files
+
+Supported file interactions:
+- Click .mpp -> load into Studio for editing
+- Click .mex -> run program output
+
+Persistence:
+- File operations are saved to disk region in current OS implementation.
+- Data should survive reboot in normal flow.
+
+
+==================================================
+11) COMMON MISTAKES AND FIXES
+==================================================
+Mistake: no output in preview
+Fix: make sure your line contains '=' and right-side text.
+
+Mistake: compile output not found
+Fix: verify folder location and compiled filename in Explorer.
+
+Mistake: output extension wrong
+Fix: use Compile flow so .mex is enforced.
+
+Mistake: parsing unexpected
+Fix: simplify to canonical form:
+text+textbox=Simple Text
+
+Mistake: mixed old/new syntax confusion
+Fix: choose one style (recommended modern no-parentheses form).
+
+
+==================================================
+12) PROGRAM DESIGN TIPS
+==================================================
+- Keep text short for cleaner runtime window display.
+- Prefer alphanumeric and basic punctuation.
+- Use one .mpp per message/screen.
+- Test often in preview before compile.
+- Save source before compile.
+
+
+==================================================
+13) ADVANCED AUTHORING PATTERNS (CURRENT LIMITS)
+==================================================
+Because M++ is minimal, advanced patterns are structural rather than language-level.
+
+Pattern A: Variant Files
+- title_a.mpp -> text+textbox=Hello
+- title_b.mpp -> text+textbox=Welcome
+
+Pattern B: Build Targets by Name
+- app_debug.mpp
+- app_release.mpp
+
+Pattern C: Content Packs by Folder
+- /apps/ui/
+- /apps/tests/
+- /apps/messages/
+
+
+==================================================
+14) DEBUGGING STRATEGY IN ALPHA BUILDS
+==================================================
+When behavior seems wrong:
+
+1. Reduce code to:
+   text+textbox=Test
+
+2. Check preview updates
+3. Save as new .mpp
+4. Compile as new .mex
+5. Run from Explorer
+6. If still broken, test in another folder
+
+Alpha bug triage checklist:
+- Parsing issue?
+- File naming issue?
+- Wrong folder?
+- Extension mismatch?
+- UI overlap or click-target issue?
+
+
+==================================================
+15) M++ STYLE GUIDE
+==================================================
+Recommended style:
+- lowercase declaration on left: text+textbox
+- single '=' assignment
+- readable words on right
+
+Good:
+text+textbox=System Ready
+
+Less ideal:
+TEXT+TEXTBOX=SYSTEMREADY
+
+Naming convention:
+- snake_case for file names (optional)
+- keep extensions correct
+
+Examples:
+welcome_banner.mpp
+welcome_banner.mex
+
+
+==================================================
+16) M++ PROGRAM COOKBOOK
+==================================================
+Example 1:
+text+textbox=Hello World!
+
+Example 2:
+text+textbox=Inter-Minux Alpha Build
+
+Example 3:
+text+textbox=Status: Mouse Online
+
+Example 4:
+text+textbox=Compilation Complete
+
+Example 5:
+text+textbox=Open File Explorer to Run
+
+
+==================================================
+17) FAQ
+==================================================
+Q: Is M++ a full general programming language?
+A: Not yet. It is currently a focused text-output DSL.
+
+Q: Can I make loops and variables now?
+A: Not in current alpha implementation.
+
+Q: Why use M++ then?
+A: Quick app-like output and a clean learning path for future expansions.
+
+Q: Should I keep .mpp files?
+A: Yes. .mpp is your editable source.
+
+Q: Is .mex editable?
+A: Treat .mex as runtime output; edit .mpp instead.
+
+
+==================================================
+18) GLOSSARY
+==================================================
+M++
+- The Minux Studio language for simple app output.
+
+.mpp
+- Editable M++ source file.
+
+.mex
+- Compiled/runnable file used by Explorer runtime.
+
+Studio Preview
+- Immediate parsed output shown in Studio.
+
+RUN Window
+- Runtime window that displays executed .mex content.
+
+
+==================================================
+19) PRACTICE EXERCISES
+==================================================
+Exercise 1:
+Create greeting.mpp that displays your name.
+
+Target:
+text+textbox=Hello, <your name>
+
+Exercise 2:
+Create status_ok.mpp and compile it.
+Run status_ok.mex from Explorer.
+
+Exercise 3:
+Create three messages in one folder:
+- start.mpp
+- loading.mpp
+- done.mpp
+Compile each to .mex and run all three.
+
+Exercise 4:
+Rename files and verify they still open/execute correctly.
+
+
+==================================================
+20) ROADMAP IDEAS FOR FUTURE M++
+==================================================
+Possible future language features:
+- Multiple statements
+- Positioning controls (x, y)
+- Colors/themes
+- Variables and constants
+- Basic conditionals
+- UI components (button, label, panel)
+- Input bindings
+- App metadata blocks
+
+Possible future Studio features:
+- Syntax highlighting
+- Multi-line editor
+- Error line hints
+- Project browser
+- Real compile logs
+
+
+==================================================
+FINAL NOTES
+==================================================
+Inter-Minux and M++ are alpha.
+Expect rough edges, but this makes it a great playground for learning OS UI,
+runtime design, and language evolution.
+
+Keep files small, test often, and iterate quickly.
+
